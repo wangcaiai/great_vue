@@ -1,16 +1,10 @@
 <template>
-  <div>
-    <el-button>123</el-button>
-  </div>
+    <router-view></router-view>
 </template>
 
 <script>
-import { regsisterAPI } from '@/api/index'
 export default {
-  async created () {
-    const res = await regsisterAPI()
-    console.log(res)
-  }
+
 }
 </script>
 
