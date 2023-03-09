@@ -3,15 +3,15 @@
     <div class="reg-box">
       <div class="reg-title"></div>
       <!-- 注册的表单域 -->
-      <el-form ref="form" :model="form">
-        <el-form-item>
+      <el-form ref="form" :model="form" :rules="rulesObj">
+        <el-form-item prop="username">
           <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="form.password" placeholder="请输入密码"></el-input>
+        <el-form-item prop="password">
+          <el-input v-model="form.password" placeholder="请输入密码" type="password"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="form.name" placeholder="请再次输入密码"></el-input>
+        <el-form-item prop="repassword">
+          <el-input v-model="form.repassword" placeholder="请再次输入密码" type="password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="regsisterFn" class="btn-reg">注册</el-button>
@@ -26,16 +26,46 @@
 export default {
   name: 'my-register',
   data () {
+    const samepwdFn = (rule, value, callback) => {
+      if (value !== this.form.password) {
+        // 如果验证失败则调用回调函数，指定一个Error对象
+        callback(new Error('两次输入密码不一致！'))
+      } else {
+        callback()
+      }
+    }
     return {
       form: {
         username: '',
         password: '',
         repassword: ''
+      },
+      rulesObj: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { pattern: /^[a-zA-Z0-9]{1,10}/, message: '用户名必须是1-10的大小字母数字', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { pattern: /^\S{6,15}$/, message: '密码是6-15位非空字符', trigger: 'blur' }
+        ],
+        repassword: [
+          { required: true, message: '请再次输入密码', trigger: 'blur' },
+          { validator: samepwdFn, trigger: 'blur' }
+        ]
       }
     }
   },
   methods: {
     regsisterFn () {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          // 通过校验
+          console.log(this.form)
+        } else {
+          return false
+        }
+      })
     }
   }
 }
