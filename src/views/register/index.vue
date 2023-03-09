@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { regsisterAPI } from '@/api'
 export default {
   name: 'my-register',
   data () {
@@ -58,10 +59,19 @@ export default {
   },
   methods: {
     regsisterFn () {
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
           // 通过校验
           console.log(this.form)
+          // 调用注册接口
+          const { data: res } = await regsisterAPI(this.form)
+          console.log(res)
+          // 注册失败提示用户
+          if (res.code !== 0) return this.$message.error(res.message)
+          // 注册成功
+          this.$message.success(res.message)
+          // 跳转登录
+          this.$router.push('/login')
         } else {
           return false
         }
