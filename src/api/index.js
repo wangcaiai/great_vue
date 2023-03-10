@@ -12,3 +12,14 @@ export const regsisterAPI = ({ username, password, repassword }) => {
     }
   })
 }
+
+export const loginAPI = ({ username, password }) => {
+  return request({
+    url: '/api/login',
+    method: 'POST',
+    data: {
+      username,
+      password
+    }
+  })
+}
