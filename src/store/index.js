@@ -4,14 +4,18 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
+  state: { // 存放数据，和data类似
+    token: ''
   },
-  getters: {
+  getters: { // 相当于计算属性
   },
-  mutations: {
+  mutations: { // 修改State和getters的数据
+    updateToken (state, newToken) {
+      state.token = newToken
+    }
   },
-  actions: {
+  actions: { // 发起异步请求
   },
-  modules: {
+  modules: { // 模块拆分
   }
 })
