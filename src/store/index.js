@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
@@ -17,5 +18,8 @@ export default new Vuex.Store({
   actions: { // 发起异步请求
   },
   modules: { // 模块拆分
-  }
+  },
+  plugins: [
+    createPersistedState()
+  ] // 插件
 })
