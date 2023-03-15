@@ -22,14 +22,24 @@ const routes = [
 const router = new VueRouter({
   routes
 })
+const whiteList = ['/login', '/reg']
 
 // 全局前置路由守卫
 router.beforeEach((to, from, next) => {
   const token = store.state.token
-  if (token && !store.state.userInfo.username) {
-    store.dispatch('getUserInfoActios')
+  if (token) {
+    // 登录了
+    if (!store.state.userInfo.username) {
+      store.dispatch('getUserInfoActios')
+    }
+    next()
+  } else {
+    // 未登录
+    if (whiteList.includes(to.path)) {
+      next()
+    }
+    next('/login')
   }
-  next()
 })
 
 export default router
