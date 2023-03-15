@@ -15,7 +15,26 @@ const routes = [
   },
   {
     path: '/',
-    component: () => import('@/views/layout')
+    component: () => import('@/views/layout'),
+    redirect: '/home',
+    children: [
+      {
+        path: '/home',
+        component: () => import('@/views/home')
+      },
+      {
+        path: '/user-info',
+        component: () => import('@/views/user/userInfo.vue')
+      },
+      {
+        path: '/user-avatar',
+        component: () => import('@/views/user/userAvatar.vue')
+      },
+      {
+        path: '/user-Pwd',
+        component: () => import('@/views/user/userPwd.vue')
+      }
+    ]
   }
 ]
 
@@ -35,10 +54,13 @@ router.beforeEach((to, from, next) => {
     next()
   } else {
     // 未登录
+    // 如果去白名单页面则放行
     if (whiteList.includes(to.path)) {
       next()
+    } else {
+      // 如果其他页面请强制拦截并跳转到登录页面
+      next('/login')
     }
-    next('/login')
   }
 })
 

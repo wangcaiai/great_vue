@@ -15,12 +15,13 @@
         <el-submenu index="1">
       <template slot="title">
         <!-- 头像 -->
-        <img src="../../assets/images/logo.png" alt="" class="avatar">
+        <img :src="user_pic" alt="" v-if="user_pic" class="avatar">
+        <img src="../../assets/images/logo.png" alt="" v-else class="avatar">
         <span>个人中心</span>
       </template>
-      <el-menu-item index="1-1"><i class="el-icon-s-operation"></i> 基本资料</el-menu-item>
-      <el-menu-item index="1-2"><i class="el-icon-camera"></i> 更换头像</el-menu-item>
-      <el-menu-item index="1-3"><i class="el-icon-key"></i>重置密码</el-menu-item>
+      <el-menu-item index="1-1" @click="$router.push('/user-info')"><i class="el-icon-s-operation"></i> 基本资料</el-menu-item>
+      <el-menu-item index="1-2" @click="$router.push('/user-avatar')"><i class="el-icon-camera"></i> 更换头像</el-menu-item>
+      <el-menu-item index="1-3" @click="$router.push('/user-Pwd')"><i class="el-icon-key"></i>重置密码</el-menu-item>
     </el-submenu>
     <el-menu-item index="2" style="overflow: hidden;" @click="logoutFn"><i class="el-icon-switch-button">退出</i> </el-menu-item>
       </el-menu>
@@ -32,12 +33,12 @@
         <div class="user-box">
           <img :src="user_pic" alt="" v-if="user_pic">
           <img src="../../assets/images/logo.png" alt="" v-else>
-          <span>欢迎{{ nickname || username }}}</span>
+          <span>欢迎{{ nickname || username }}</span>
         </div>
         <!-- 侧边栏导航-菜单 -->
         <el-menu
       :unique-opened= true
-      default-active="/home"
+      default-active="$route.path"
       class="el-menu-vertical-demo"
       @open="handleOpen"
       @close="handleClose"
@@ -50,7 +51,7 @@
          <!-- 首页按钮栏 -->
       <el-menu-item v-if="!item.children" :index="item.indexPath" :key="item.indexPath">
         <i :class="item.icon"></i>
-        <span>{{ item.title }}}</span>
+        <span>{{ item.title }}</span>
       </el-menu-item>
       <!-- 文章管理栏 -->
       <el-submenu v-else :index="item.indexPath" :key="item.indexPath">
@@ -69,7 +70,7 @@
       <el-container>
         <!-- 主体区域 -->
         <el-main>
-          main.vue后台
+          <router-view></router-view>
         </el-main>
         <!-- 底部 -->
         <el-footer>

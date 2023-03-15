@@ -35,3 +35,39 @@ export const getMenusListAPI = () => {
     url: '/my/menus'
   })
 }
+
+export const updataUserInfoAPI = ({ id, username, nickname, email, user_pic }) => {
+  return request({
+    url: '/my/userinfo',
+    method: 'PUT',
+    data: {
+      id,
+      username,
+      nickname,
+      email,
+      user_pic
+    }
+  })
+}
+
+export const updataUserAvatarApi = (avatar) => {
+  return request({
+    url: '/my/update/avatar',
+    method: 'PATCH',
+    data: {
+      avatar
+    }
+  })
+}
+
+export const updataPwdAPI = ({ old_pwd, new_pwd, re_pwd }) => {
+  return request({
+    url: '/my/updatepwd',
+    method: 'PATCH',
+    data: {
+      old_pwd,
+      new_pwd,
+      re_pwd
+    }
+  })
+}
