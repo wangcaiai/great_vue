@@ -29,10 +29,10 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small"
+            <el-button type="primary" size="small" @click="choseFn"
               >筛选</el-button
             >
-            <el-button type="info" size="small"
+            <el-button type="info" size="small" @click="resetFn"
               >重置</el-button
             >
           </el-form-item>
@@ -48,7 +48,11 @@
       </div>
        <!-- 文章表格区域 -->
        <el-table :data="artList" style="width: 100%" border stripe>
-        <el-table-column label="文章标题" prop="title"></el-table-column>
+        <el-table-column label="文章标题" prop="title">
+          <template v-slot="scope">
+            <el-link type="primary" @click="showDetailFn(scope.row.id)">{{ scope.row.title }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column label="分类" prop="cate_name"></el-table-column>
         <el-table-column label="发表时间" prop="pub_date">
           <template v-slot="scope">
@@ -56,7 +60,11 @@
           </template>
         </el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作">
+          <template v-slot="{ row }">
+            <el-button type="danger" size="mini" @click="removeFn(row.id)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChangeFn"
@@ -136,12 +144,35 @@
           </el-form-item>
         </el-form>
 </el-dialog>
+<el-dialog title="文章预览" :visible.sync="detailVisible" width="80%">
+        <h1 class="title"></h1>
+
+        <div class="info">
+          <span>作者：{{ artDetail.nickname || artDetail.username }} </span>
+          <span>发布时间：{{ $formatDate(artDetail.pub_date) }} </span>
+          <span>所属分类：{{ artDetail.cate_name }} </span>
+          <span>状态：{{ artDetail.state }} </span>
+        </div>
+
+        <!-- 分割线 -->
+        <el-divider></el-divider>
+
+        <!-- 文章的封面 -->
+        <img
+          :src="baseURL + artDetail.cover_img"
+          alt=""
+        />
+
+        <!-- 文章的详情 -->
+        <div v-html="artDetail.content" class="detail-box"></div>
+      </el-dialog>
 </el-card>
 </div>
 </template>
 
 <script>
-import { getArtCateListAPI, pubArticleAPI, getArtListAPI } from '@/api'
+import { getArtCateListAPI, pubArticleAPI, getArtListAPI, getArtDetailAPI, delArticleAPI } from '@/api'
+import { baseURL } from '@/utils/request'
 import imgObj from '../../assets/images/cover.jpg'
 export default {
   name: 'art-list',
@@ -185,7 +216,10 @@ export default {
       },
       cateList: [],
       artList: [],
-      total: 0
+      total: 0,
+      detailVisible: false,
+      artDetail: {},
+      baseURL
     }
   },
   created () {
@@ -244,7 +278,6 @@ export default {
           console.log(res)
           if (res.code !== 0) return this.$message.error(res.message)
           this.$message.success(res.message)
-          console.log(this.pubForm)
           this.dialogVisible = false
           this.getArtListFn()
         } else {
@@ -266,6 +299,31 @@ export default {
     handleCurrentChangeFn (nowpage) {
       this.q.pagenum = nowpage
       this.getArtListFn()
+    },
+    choseFn () {
+      this.q.pagenum = 1
+      this.q.pagesize = 2
+      this.getArtListFn()
+    },
+    resetFn () {
+      this.q = {
+        pagenum: 1,
+        pagesize: 2,
+        cate_id: '',
+        state: ''
+      }
+      this.getArtListFn()
+    },
+    async showDetailFn (artId) {
+      const res = await getArtDetailAPI(artId)
+      this.artDetail = res.data.data
+      this.detailVisible = true
+    },
+    async removeFn (artId) {
+      const { data: res } = await delArticleAPI(artId)
+      if (res.code !== 0) return this.$message.error(res.message)
+      this.$message.success(res.message)
+      this.resetFn()
     }
   }
 }
