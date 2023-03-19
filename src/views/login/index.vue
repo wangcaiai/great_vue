@@ -7,7 +7,7 @@
         <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
       </el-form-item>
       <el-form-item prop="password" class="login-form">
-        <el-input v-model="loginForm.password" placeholder='请输入密码'></el-input>
+        <el-input v-model="loginForm.password" placeholder='请输入密码' type="password"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="loginFn" class="login-btn">登录</el-button>
@@ -47,7 +47,6 @@ export default {
       this.$refs.loginRef.validate(async valid => {
         if (valid) {
           // 通过校验
-          console.log(this.loginForm)
           const { data: res } = await loginAPI(this.loginForm)
           if (res.code !== 0) return this.$message.error(res.message)
           else {
